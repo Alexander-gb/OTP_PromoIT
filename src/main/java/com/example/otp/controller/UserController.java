@@ -13,14 +13,14 @@ public class UserController {
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String pageForUser(){
-        return "This is page for only users";
+        return "This page is only for users";
     }
 
 
     @GetMapping("/admins")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String pageForAdmins(){
-        return "This is page for only admins";
+        return "This page is only for admins";
     }
 
 
