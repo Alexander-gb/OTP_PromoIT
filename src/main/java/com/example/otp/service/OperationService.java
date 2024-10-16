@@ -3,6 +3,7 @@ package com.example.otp.service;
 
 import com.example.otp.entity.Operation;
 import com.example.otp.repository.OperationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,22 +16,25 @@ public class OperationService {
     private final OperationRepository operationRepository;
     private final EmailService emailService;
 
-    public OperationService(OperationRepository operationRepository, EmailService emailService  ) {
+    public OperationService(OperationRepository operationRepository, EmailService emailService) {
         this.operationRepository = operationRepository;
         this.emailService = emailService;
     }
 
 
-    private static final int CODE_LENGTH = 6;
-    private static final int CODE_LIFETIME_MINUTES = 10;
+    @Value("${otp.code.lifetime.minutes}")
+    private int codeLifetimeMinutes;
+
+    @Value("${otp.code.length}")
+    private int codeLength;
 
     public Operation createOperation(String description, String email) {
         Operation operation = new Operation();
         operation.setDescription(description);
         operation.setEmail(email);
         operation.setCreatedAt(LocalDateTime.now());
-        operation.setExpiresAt(LocalDateTime.now().plusMinutes(CODE_LIFETIME_MINUTES));
-        operation.setOtpCode(generateRandomCode(CODE_LENGTH));
+        operation.setExpiresAt(LocalDateTime.now().plusMinutes(codeLifetimeMinutes));
+        operation.setOtpCode(generateRandomCode(codeLength));
         operation.setVerified(false);
 
         operationRepository.save(operation);

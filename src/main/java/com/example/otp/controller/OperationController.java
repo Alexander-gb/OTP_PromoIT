@@ -22,8 +22,11 @@ public class OperationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<Boolean> verifyOTPCode(@RequestBody OTPCodeRequest request) {
-        boolean isValid = operationService.verifyOTPCode(request.getEmail(), request.getCode());
-        return ResponseEntity.ok(isValid);
+    public ResponseEntity<String> verifyOTPCode(@RequestBody OTPCodeRequest request) {
+        boolean verified = operationService.verifyOTPCode(request.getEmail(), request.getCode());
+        if (verified) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().body("Invalid OTP code");
     }
 }
